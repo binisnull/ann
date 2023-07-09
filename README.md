@@ -9,10 +9,11 @@ This is a very basic multi-layer perceptron framework based only on numpy, and y
 File Name: test_mnist.py
 """
 # Python 3.8.16
-from tensorflow.keras.datasets import mnist  # tensorflow-gpu 2.3.0
+
 import numpy as np  # 1.18.5
-import neural_network as nn
+from tensorflow.keras.datasets import mnist  # tensorflow-gpu 2.3.0
 import activation_function as af
+import neural_network as nn
 
 
 def get_one_hot(one_dim_digit):
@@ -41,20 +42,25 @@ test_labels = np.apply_along_axis(
 
 # MODEL
 
-# Create a two-layer network where
-# the hidden layer has 51 neurons,
-# the output layer has 10 neurons,
-# and the hidden layer activation function is the Sigmoid function
-classifier = nn.SoftmaxClassifier((feature_dim, 51, 10),
+# There are 81 neurons in the hidden layer.
+classifier = nn.SoftmaxClassifier((feature_dim, 81, 10),
                                   (af.sigmoid,),
                                   (af.d_sigmoid,))
 
 # TRAINING
 
-classifier.set_learning_rate(0.05)
-classifier.train_mul_epoch(train_features, train_labels, 10, 11)  # batch_size=10, epoch_size=11
-classifier.set_learning_rate(0.01)
-classifier.train_mul_epoch(train_features, train_labels, 10, 13)  # batch_size=10, epoch_size=13
+classifier.set_learning_rate(0.55)
+# batch_size = 9, epoch_size = 11
+classifier.train_mul_epoch(train_features, train_labels, 9, 11,
+                           test_features, test_labels)
+classifier.set_learning_rate(0.1)
+# batch_size = 27, epoch_size = 9
+classifier.train_mul_epoch(train_features, train_labels, 27, 9,
+                           test_features, test_labels)
+classifier.set_learning_rate(0.001)
+# batch_size = 31, epoch_size = 13
+classifier.train_mul_epoch(train_features, train_labels, 31, 13,
+                           test_features, test_labels)
 
 # TEST
 
