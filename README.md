@@ -1,4 +1,4 @@
-#A multi-layer perceptron framework based only on numpy
+# A multi-layer perceptron framework based only on numpy
 
 ## :feet:<font color=#783CB4>Introduction:umbrella:
 This is a basic multi-layer perceptron framework based on numpy only, and you can flexibly modify the number of layers, the number of neurons, and the activation function of each layer according to your needs.
