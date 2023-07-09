@@ -52,9 +52,9 @@ classifier = nn.SoftmaxClassifier((feature_dim, 51, 10),
 # TRAINING
 
 classifier.set_learning_rate(0.05)
-classifier.train_mul_epoch(train_features, train_labels, 10, 11)
+classifier.train_mul_epoch(train_features, train_labels, 10, 11)  # batch_size=10, epoch_size=11
 classifier.set_learning_rate(0.01)
-classifier.train_mul_epoch(train_features, train_labels, 10, 13)
+classifier.train_mul_epoch(train_features, train_labels, 10, 13)  # batch_size=10, epoch_size=13
 
 # TEST
 
