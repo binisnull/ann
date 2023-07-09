@@ -1,17 +1,3 @@
-<style>
-    h1{
-        font-family: "Times New Roman", "宋体";
-    }
-    h2{
-        font-family: "Times New Roman", "宋体";
-    }
-    p{
-        font-family: "Times New Roman", "宋体";
-        font-size: 200%;
-        color: #000000;
-    }
-</style>
-<!-- [TOC] -->
 #A multi-layer perceptron framework based only on numpy
 
 ## :feet:<font color=#783CB4>Introduction:umbrella:
