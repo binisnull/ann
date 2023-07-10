@@ -22,7 +22,7 @@ def d_sigmoid(np2d_arr):
 
 def relu(np2d_arr):
     """Rectified linear unit function"""
-    return max(0, np2d_arr)
+    return np.maximum(np2d_arr, 0)
 
 
 def d_relu(np2d_arr):
