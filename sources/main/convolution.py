@@ -4,7 +4,6 @@ Author: BinIsNull
 
 Contact: dengz004@163.com
 """
-import numpy
 # Python 3.8.16
 
 import numpy as np  # 1.18.5
@@ -13,61 +12,64 @@ import numpy as np  # 1.18.5
 class ConvolutionalLayer(object):
     """Convolutional layer"""
 
-    def __init__(self, feature_shape, kern_shape, stride=1):
+    def __init__(self, input_shape, num_kern, h_kern, w_kern, stride=1):
         """
         Parameters
         --
-        feature_shape: tuple or list
-            (width_feature, height_feature, depth)
-        kern_shape: tuple or list
-            (num_kernel, width_kernel, height_kernel)
+        input_shape: tuple or list
+            (height, width, depth)
+        num_kern: integer
+            Number of kernel
+        h_kern: integer
+            Height of kernel
+        w_kern: integer
+            Width of kernel
         stride: integer
         """
         # Shape of convolutional kernel
-        self.__k_shape = [i for i in kern_shape]
-        self.__k_shape.append(feature_shape[-1])
+        self.__k_shape = [num_kern, h_kern, w_kern, input_shape[-1]]
         # Convolutional kernel
-        self.__kern = np.random.uniform(
+        self.kernel = np.random.uniform(
             -1, 1, self.__k_shape,
         )
         # Bias array
-        self.__bias = np.random.uniform(-1, -1, (self.__k_shape[0],))
+        self.bias = np.random.uniform(-1, -1, (self.__k_shape[0],))
         # Output tensor width
-        self.__otp_wdt = (feature_shape[0] - self.__k_shape[1]) // stride + 1
+        self.__w_out = (input_shape[1] - self.__k_shape[2]) // stride + 1
         # Output tensor height
-        self.__otp_hgt = (feature_shape[1] - self.__k_shape[2]) // stride + 1
+        self.__h_out = (input_shape[0] - self.__k_shape[1]) // stride + 1
         # The pair of row and column numbers of
-        # the local feature tensors in the global feature tensor
-        num = self.__otp_wdt * self.__otp_hgt
-        self.__inp_arr = np.arange(num)
-        row = self.__inp_arr // self.__otp_wdt
-        col = self.__inp_arr % self.__otp_wdt
-        self.__inp_arr = ((np.append(row * stride, col * stride)).reshape((2, num))).T
+        # the local input tensors in the global input tensor
+        num = self.__w_out * self.__h_out
+        self.__locations = np.arange(num)
+        row = self.__locations // self.__w_out
+        col = self.__locations % self.__w_out
+        self.__locations = ((np.append(row, col)).reshape((2, num))).T * stride
+        # Parameters for next ConvolutionalLayer
+        self.next_input_shape = (self.__h_out, self.__w_out, self.__k_shape[0])
 
-    def __cal_element(self, arr, feature):
-        row_stt, col_stt = arr[0], arr[1]
-        row_end, col_end = row_stt + self.__k_shape[2], col_stt + self.__k_shape[1]
-        # (width, height, depth) * (num_kernel, width, height, depth)
-        elem = feature[row_stt:row_end:1, col_stt:col_end:1] * self.__kern
-        # (num_kernel, )
+    def __cal_element(self, location, np3d):
+        row_stt, col_stt = location[0], location[1]
+        row_end, col_end = row_stt + self.__k_shape[1], col_stt + self.__k_shape[2]
+        elem = np3d[row_stt:row_end:1, col_stt:col_end:1] * self.kernel
         return elem.sum(axis=3).sum(axis=2).sum(axis=1)
 
-    def __cal_one_sample(self, feature):
-        otp = np.apply_along_axis(self.__cal_element, 1, self.__inp_arr, feature)
-        return otp.reshape((self.__otp_wdt, self.__otp_hgt, self.__k_shape[0])) + self.__bias
+    def __cal_one_sample(self, np3d):
+        otp = np.apply_along_axis(self.__cal_element, 1, self.__locations, np3d)
+        return otp.reshape((self.__h_out, self.__w_out, self.__k_shape[0])) + self.bias
 
-    def forward(self, features):
+    def forward(self, np4d):
         """
         Parameters
         --
-        features: numpy.ndarray
-            shape=(num_sample, width_feature, height_feature, depth)
+        np4d: numpy.ndarray
+            shape=(number, height, width, depth)
         """
         return np.apply_along_axis(
-            lambda x, y: self.__cal_one_sample(y[x[0]]),
+            lambda index, inputs: self.__cal_one_sample(inputs[index[0]]),
             1,
-            np.arange(features.shape[0]).reshape((features.shape[0], 1)),
-            features
+            np.arange(np4d.shape[0]).reshape((np4d.shape[0], 1)),
+            np4d
         )
 
 
