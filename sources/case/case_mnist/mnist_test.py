@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 """
-File Name: test_mnist.py
+Author: BinIsNull
+
+Contact: dengz004@163.com
 """
 # Python 3.8.16
 
