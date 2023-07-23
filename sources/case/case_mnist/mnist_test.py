@@ -8,8 +8,8 @@ Contact: dengz004@163.com
 
 import numpy as np  # 1.18.5
 from tensorflow.keras.datasets import mnist  # tensorflow-gpu 2.3.0
-import activation_function as af
-import neural_network as nn
+import sources.main.activation_function as af
+import sources.main.neural_network as nn
 
 
 def get_one_hot(one_dim_digit):
