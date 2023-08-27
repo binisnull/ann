@@ -42,11 +42,11 @@ class ConvolutionalLayer(object):
         self.__h_out = (input_shape[0] - self.__ksp[1]) // vtc_stride + 1
         # The pair of row and column numbers of
         # the local input tensors in the global input tensor
-        num = self.__w_out * self.__h_out
-        idx_out = np.arange(num)
+        num_out = self.__w_out * self.__h_out
+        idx_out = np.arange(num_out)
         row = (idx_out // self.__w_out) * vtc_stride
         col = (idx_out % self.__w_out) * hrz_stride
-        self.__locations = ((np.append(row, col)).reshape((2, num))).T
+        self.__locations = ((np.append(row, col)).reshape((2, num_out))).T
         # Parameters for next ConvolutionalLayer
         self.next_input_shape = (self.__h_out, self.__w_out, self.__ksp[0])
 
